@@ -1,0 +1,21 @@
+﻿Bloque,Indicador,Encuesta,Referencia_Exacta,Valor,SE,CV_pct,Cumple_CV_20
+Hogar y Cuidado,Hogares con >=1 persona con discapacidad severa (1 de cada 4.83 hogares),ENAPROM (Microdatos),BDP_PERSONAS (P01E09A-F),20.72%,1.37%,6.6,True
+Hogar y Cuidado,Hogares con >=1 persona con alguna dificultad (1 de cada 1.84 hogares),ENAPROM (Microdatos),BDP_PERSONAS (P01E09A-F),54.41%,1.76%,3.24,True
+Prevalencia Demográfica,Población >=4 años con discapacidad severa,ENAPROM (Microdatos),BDP_PERSONAS (P01E09A-F),7.44%,0.53%,7.18,True
+Prevalencia Demográfica,Adultos mayores (60+ años) con discapacidad severa,ENAPROM (Microdatos),BDP_PERSONAS (P01E03>=60),23.35%,2.1%,8.99,True
+Dominios Funcionales (WG),Dificultad severa para Caminar o subir escaleras (>=4 años),ENAPROM (Microdatos),BDP_PERSONAS (P01E09C),3.28%,0.3%,9.18,True
+Dominios Funcionales (WG),Dificultad severa para Ver (aun usando lentes) (>=4 años),ENAPROM (Microdatos),BDP_PERSONAS (P01E09A),3.21%,0.34%,10.44,True
+Dominios Funcionales (WG),Dificultad severa para Oír (aun usando aparato) (>=4 años),ENAPROM (Microdatos),BDP_PERSONAS (P01E09B),1.5%,0.22%,14.7,True
+Dominios Funcionales (WG),Dificultad severa para Recordar o concentrarse (>=4 años),ENAPROM (Microdatos),BDP_PERSONAS (P01E09D),1.44%,0.2%,13.66,True
+Dominios Funcionales (WG),Dificultad severa para Comunicarse (>=4 años),ENAPROM (Microdatos),BDP_PERSONAS (P01E09F),0.87%,0.13%,15.42,True
+Dominios Funcionales (WG),Dificultad severa para Cuidado personal o vestirse (>=4 años),ENAPROM (Microdatos),BDP_PERSONAS (P01E09E),0.76%,0.14%,17.98,True
+Brecha Calidad de Vida,Analfabetismo (>=15 años): Con vs Sin discapacidad severa,ENAPROM (Microdatos),BDP_PERSONAS (P01E11),18.89% vs 4.87%,2.16% / 0.56%,11.58,True
+Brecha Calidad de Vida,Uso de internet (>=15 años): Con vs Sin discapacidad severa,ENAPROM (Cruce 2+3),BDP_LCD (P03D01),49.97% vs 82.66%,4.45% / 1.65%,8.91,True
+Brecha Calidad de Vida,Práctica deportiva (>=15 años): Con vs Sin discapacidad severa,ENAPROM (Cruce 2+3),BDP_LCD (P04A01),35.67% vs 52.62%,4.09% / 1.73%,11.46,True
+Contexto Laboral Urbano Metro,Tasa Global de Participación (1T 2026 - Urbano Metropolitano),ENEIC (Informe 2024-1T 2026),"Anexo 5.22, pág. 105",66.95%,0.46%,0.69,True
+Contexto Laboral Urbano Metro,Tasa de Desempleo Abierto (1T 2026 - Urbano Metropolitano),ENEIC (Informe 2024-1T 2026),"Anexo 5.22, pág. 105",3.93%,0.24%,6.14,True
+Contexto Laboral Urbano Metro,Tasa de Informalidad Laboral (1T 2026 - Urbano Metropolitano),ENEIC (Informe 2024-1T 2026),"Sección 2.6, pág. 30",43.70%,N/D (Tabulado),< 20.0 (Oficial),True
+Carga de Cuidados en el Hogar,Tiempo diario cuidado personas mayores - Mujeres ocupadas (4T 2025),ENEIC (Informe 2024-1T 2026),"Sección 3.38, pág. 58",3.10 hrs/día,N/D (Tabulado),< 20.0 (Oficial),True
+Carga de Cuidados en el Hogar,Tiempo diario cuidado personas mayores - Hombres ocupados (4T 2025),ENEIC (Informe 2024-1T 2026),"Sección 3.38, pág. 58",2.93 hrs/día,N/D (Tabulado),< 20.0 (Oficial),True
+Carga de Cuidados en el Hogar,Tiempo diario cuidado personas enfermas - Mujeres ocupadas (4T 2025),ENEIC (Informe 2024-1T 2026),"Sección 3.39, pág. 58",2.59 hrs/día,N/D (Tabulado),< 20.0 (Oficial),True
+Brecha de Ingresos Urbano Metro,Ingreso laboral promedio Urbano Metro - Hombres vs Mujeres (4T 2025),ENEIC (Boletín Estadístico No. 3),"Gráfica 17, pág. 23","Q4,565.4 vs Q3,411.0",N/D (Tabulado),< 20.0 (Oficial),True
