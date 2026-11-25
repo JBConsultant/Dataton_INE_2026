@@ -23,5 +23,6 @@ Traducir estadísticas oficiales subexplotadas en una pieza de comunicación vis
 
 ## 5. Bitácora de Avance (Hitos)
 * **[23/11/2026]** Creación del repositorio, definición de arquitectura documental y levantamiento de requerimientos técnicos.
-* **[En curso]** Definición de cruces de variables y validación de fuentes de datos.
+* **[24/11/2016]** Creación de Nota Metodologica en base a la definición de cruces de variables y validación de fuentes de datos.
+* **[En curso]**  Diseño y depuración de Infografía y ficha conceptual
 * **[26/11/2026 - 08:00 hrs]** Cierre y entrega de paquetes finales (RGB/CMYK) y ficha conceptual.
