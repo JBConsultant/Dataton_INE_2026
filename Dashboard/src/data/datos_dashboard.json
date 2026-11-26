@@ -1,0 +1,802 @@
+{
+  "metadata": {
+    "proyecto": "Datatón INE 2026 — Grupo 2: Análisis de Datos",
+    "tema": "Discapacidad (Washington Group), Hogares y Brechas de Inclusión",
+    "universo_geografico": "República de Guatemala (Cobertura Nacional — ENAPROM 2025)",
+    "umbral_cv_maximo": 20.0,
+    "fecha_generacion": "2026-11-25 19:47:30",
+    "fuentes": [
+      "ENAPROM 2025 — Base de Personas Nacional (ENAPROM_PERSONAS-3.xlsx, INE)"
+    ],
+    "nota_metodologica": "Estimaciones generadas íntegramente desde una única base oficial de ENAPROM 2025 agregada por NO_HOGAR y CP, sin fusión de encuestas independientes."
+  },
+  "definiciones_oficiales": {
+    "hogar": {
+      "titulo": "¿Qué es un Hogar y cómo se calcula?",
+      "definicion_ine": "Según el INE (ENAPROM 2025), un hogar es la unidad doméstica formada por una persona sola o un grupo de personas, con o sin vínculo de parentesco, que residen habitualmente en la misma vivienda y comparten un presupuesto común para la alimentación.",
+      "metodo_calculo": "A partir de la base oficial de personas (ENAPROM_PERSONAS-3.xlsx), se agrupan los residentes por la llave única de hogar (NO_HOGAR, n = 5,124 hogares; N = 4,107,011 hogares expandidos). Un hogar se clasifica con presencia de dificultad funcional severa si al menos un integrante de 4 años o más (CP) presenta código 3 o 4 en los dominios del Washington Group, aplicando el factor de expansión del hogar (FACTOR) y linealización de Taylor por conglomerado."
+    },
+    "washington_group": {
+      "titulo": "¿Por qué 'Dificultades Funcionales Severas' (Washington Group)?",
+      "definicion_wg": "El Grupo de Washington sobre Estadísticas de Discapacidad (WG-SS), adoptado por el INE en el Capítulo II de la ENAPROM 2025 (preguntas P02A11A a P02A11F), evalúa limitaciones funcionales en 6 dominios básicos (ver, oír, caminar, recordar/concentrarse, cuidado personal y comunicarse) en población de 4 años y más, evitando el subregistro asociado al estigma del término clínico 'discapacidad'.",
+      "criterio_estadistico": "La escala de respuesta tiene 4 niveles: 1) Sin dificultad, 2) Cierta dificultad, 3) Mucha dificultad y 4) No puede hacerlo. Siguiendo el estándar internacional del Washington Group para comparabilidad y focalización de políticas públicas, el umbral operativo de 'Dificultad Funcional Severa (Discapacidad)' incluye exclusivamente a quienes reportan código 3 (Mucha dificultad) o código 4 (No puede hacerlo) en al menos un dominio."
+    }
+  },
+  "kpis_hogar": {
+    "discapacidad_severa": {
+      "valor": 13.42,
+      "se": 0.55,
+      "cv": 4.09,
+      "n_muestral": 5124,
+      "poblacion_expandida": 4107011,
+      "estado_cv": "CONFIABLE",
+      "publicable": true,
+      "hogares_con_condicion_est": 551213,
+      "ratio_texto": "1 de cada 7.45 hogares",
+      "descripcion": "Hogares con al menos una persona (>=4 años) con dificultad severa o total"
+    },
+    "alguna_dificultad": {
+      "valor": 46.85,
+      "se": 0.83,
+      "cv": 1.76,
+      "n_muestral": 5124,
+      "poblacion_expandida": 4107011,
+      "estado_cv": "CONFIABLE",
+      "publicable": true,
+      "hogares_con_condicion_est": 1923937,
+      "ratio_texto": "1 de cada 2.13 hogares",
+      "descripcion": "Hogares con al menos una persona (>=4 años) con alguna dificultad funcional"
+    }
+  },
+  "explorador_prevalencia": [
+    {
+      "filtro_edad": "TODOS",
+      "filtro_sexo": "TODOS",
+      "discapacidad_severa": {
+        "valor": 3.78,
+        "se": 0.17,
+        "cv": 4.37,
+        "n_muestral": 20531,
+        "poblacion_expandida": 16974815,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "alguna_dificultad": {
+        "valor": 18.03,
+        "se": 0.4,
+        "cv": 2.22,
+        "n_muestral": 20531,
+        "poblacion_expandida": 16974815,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "personas_con_disc_severa_est": 642454
+    },
+    {
+      "filtro_edad": "TODOS",
+      "filtro_sexo": "Hombres",
+      "discapacidad_severa": {
+        "valor": 3.53,
+        "se": 0.21,
+        "cv": 5.91,
+        "n_muestral": 9795,
+        "poblacion_expandida": 8283701,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "alguna_dificultad": {
+        "valor": 16.61,
+        "se": 0.47,
+        "cv": 2.83,
+        "n_muestral": 9795,
+        "poblacion_expandida": 8283701,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "personas_con_disc_severa_est": 292603
+    },
+    {
+      "filtro_edad": "TODOS",
+      "filtro_sexo": "Mujeres",
+      "discapacidad_severa": {
+        "valor": 4.03,
+        "se": 0.23,
+        "cv": 5.66,
+        "n_muestral": 10736,
+        "poblacion_expandida": 8691114,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "alguna_dificultad": {
+        "valor": 19.38,
+        "se": 0.51,
+        "cv": 2.61,
+        "n_muestral": 10736,
+        "poblacion_expandida": 8691114,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "personas_con_disc_severa_est": 349851
+    },
+    {
+      "filtro_edad": "4-17",
+      "filtro_sexo": "TODOS",
+      "discapacidad_severa": {
+        "valor": 1.15,
+        "se": 0.17,
+        "cv": 14.53,
+        "n_muestral": 6487,
+        "poblacion_expandida": 5516380,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "alguna_dificultad": {
+        "valor": 6.88,
+        "se": 0.41,
+        "cv": 5.93,
+        "n_muestral": 6487,
+        "poblacion_expandida": 5516380,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "personas_con_disc_severa_est": 63370
+    },
+    {
+      "filtro_edad": "4-17",
+      "filtro_sexo": "Hombres",
+      "discapacidad_severa": {
+        "valor": 1.14,
+        "se": 0.21,
+        "cv": 18.39,
+        "n_muestral": 3324,
+        "poblacion_expandida": 2921874,
+        "estado_cv": "PRECAUCION",
+        "publicable": true
+      },
+      "alguna_dificultad": {
+        "valor": 6.54,
+        "se": 0.51,
+        "cv": 7.84,
+        "n_muestral": 3324,
+        "poblacion_expandida": 2921874,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "personas_con_disc_severa_est": 33347
+    },
+    {
+      "filtro_edad": "4-17",
+      "filtro_sexo": "Mujeres",
+      "discapacidad_severa": {
+        "valor": 1.16,
+        "se": 0.24,
+        "cv": 20.34,
+        "n_muestral": 3163,
+        "poblacion_expandida": 2594506,
+        "estado_cv": "NO_PUBLICABLE",
+        "publicable": false
+      },
+      "alguna_dificultad": {
+        "valor": 7.27,
+        "se": 0.59,
+        "cv": 8.17,
+        "n_muestral": 3163,
+        "poblacion_expandida": 2594506,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "personas_con_disc_severa_est": 30023
+    },
+    {
+      "filtro_edad": "18-59",
+      "filtro_sexo": "TODOS",
+      "discapacidad_severa": {
+        "valor": 2.89,
+        "se": 0.19,
+        "cv": 6.59,
+        "n_muestral": 11678,
+        "poblacion_expandida": 9919594,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "alguna_dificultad": {
+        "valor": 17.91,
+        "se": 0.5,
+        "cv": 2.77,
+        "n_muestral": 11678,
+        "poblacion_expandida": 9919594,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "personas_con_disc_severa_est": 286772
+    },
+    {
+      "filtro_edad": "18-59",
+      "filtro_sexo": "Hombres",
+      "discapacidad_severa": {
+        "valor": 2.82,
+        "se": 0.25,
+        "cv": 8.99,
+        "n_muestral": 5365,
+        "poblacion_expandida": 4656940,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "alguna_dificultad": {
+        "valor": 16.63,
+        "se": 0.63,
+        "cv": 3.76,
+        "n_muestral": 5365,
+        "poblacion_expandida": 4656940,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "personas_con_disc_severa_est": 131528
+    },
+    {
+      "filtro_edad": "18-59",
+      "filtro_sexo": "Mujeres",
+      "discapacidad_severa": {
+        "valor": 2.95,
+        "se": 0.26,
+        "cv": 8.69,
+        "n_muestral": 6313,
+        "poblacion_expandida": 5262654,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "alguna_dificultad": {
+        "valor": 19.04,
+        "se": 0.62,
+        "cv": 3.26,
+        "n_muestral": 6313,
+        "poblacion_expandida": 5262654,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "personas_con_disc_severa_est": 155244
+    },
+    {
+      "filtro_edad": "60+",
+      "filtro_sexo": "TODOS",
+      "discapacidad_severa": {
+        "valor": 19.0,
+        "se": 1.0,
+        "cv": 5.27,
+        "n_muestral": 2366,
+        "poblacion_expandida": 1538841,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "alguna_dificultad": {
+        "valor": 58.78,
+        "se": 1.35,
+        "cv": 2.3,
+        "n_muestral": 2366,
+        "poblacion_expandida": 1538841,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "personas_con_disc_severa_est": 292312
+    },
+    {
+      "filtro_edad": "60+",
+      "filtro_sexo": "Hombres",
+      "discapacidad_severa": {
+        "valor": 18.12,
+        "se": 1.38,
+        "cv": 7.64,
+        "n_muestral": 1106,
+        "poblacion_expandida": 704887,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "alguna_dificultad": {
+        "valor": 58.23,
+        "se": 1.82,
+        "cv": 3.12,
+        "n_muestral": 1106,
+        "poblacion_expandida": 704887,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "personas_con_disc_severa_est": 127728
+    },
+    {
+      "filtro_edad": "60+",
+      "filtro_sexo": "Mujeres",
+      "discapacidad_severa": {
+        "valor": 19.74,
+        "se": 1.34,
+        "cv": 6.81,
+        "n_muestral": 1260,
+        "poblacion_expandida": 833954,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "alguna_dificultad": {
+        "valor": 59.24,
+        "se": 1.68,
+        "cv": 2.83,
+        "n_muestral": 1260,
+        "poblacion_expandida": 833954,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "personas_con_disc_severa_est": 164584
+    }
+  ],
+  "dominios_washington_group": [
+    {
+      "codigo": "P02A11C",
+      "id": "caminar",
+      "nombre": "Caminar o subir escaleras",
+      "general_4_mas": {
+        "valor": 1.69,
+        "se": 0.1,
+        "cv": 6.07,
+        "n_muestral": 20531,
+        "poblacion_expandida": 16974815,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "adultos_mayores_60_mas": {
+        "valor": 10.88,
+        "se": 0.76,
+        "cv": 6.98,
+        "n_muestral": 2366,
+        "poblacion_expandida": 1538841,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      }
+    },
+    {
+      "codigo": "P02A11A",
+      "id": "ver",
+      "nombre": "Ver (aun usando lentes)",
+      "general_4_mas": {
+        "valor": 1.53,
+        "se": 0.1,
+        "cv": 6.6,
+        "n_muestral": 20531,
+        "poblacion_expandida": 16974815,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "adultos_mayores_60_mas": {
+        "valor": 8.53,
+        "se": 0.73,
+        "cv": 8.61,
+        "n_muestral": 2366,
+        "poblacion_expandida": 1538841,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      }
+    },
+    {
+      "codigo": "P02A11D",
+      "id": "recordar",
+      "nombre": "Recordar o concentrarse",
+      "general_4_mas": {
+        "valor": 0.8,
+        "se": 0.08,
+        "cv": 9.69,
+        "n_muestral": 20531,
+        "poblacion_expandida": 16974815,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "adultos_mayores_60_mas": {
+        "valor": 3.49,
+        "se": 0.45,
+        "cv": 13.03,
+        "n_muestral": 2366,
+        "poblacion_expandida": 1538841,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      }
+    },
+    {
+      "codigo": "P02A11B",
+      "id": "oir",
+      "nombre": "Oír (aun usando aparato)",
+      "general_4_mas": {
+        "valor": 0.77,
+        "se": 0.07,
+        "cv": 8.99,
+        "n_muestral": 20531,
+        "poblacion_expandida": 16974815,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "adultos_mayores_60_mas": {
+        "valor": 5.56,
+        "se": 0.59,
+        "cv": 10.57,
+        "n_muestral": 2366,
+        "poblacion_expandida": 1538841,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      }
+    },
+    {
+      "codigo": "P02A11F",
+      "id": "comunicarse",
+      "nombre": "Comunicarse",
+      "general_4_mas": {
+        "valor": 0.66,
+        "se": 0.07,
+        "cv": 10.14,
+        "n_muestral": 20531,
+        "poblacion_expandida": 16974815,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "adultos_mayores_60_mas": {
+        "valor": 1.5,
+        "se": 0.27,
+        "cv": 18.24,
+        "n_muestral": 2366,
+        "poblacion_expandida": 1538841,
+        "estado_cv": "PRECAUCION",
+        "publicable": true
+      }
+    },
+    {
+      "codigo": "P02A11E",
+      "id": "cuidado_personal",
+      "nombre": "Cuidado personal o vestirse",
+      "general_4_mas": {
+        "valor": 0.52,
+        "se": 0.06,
+        "cv": 10.76,
+        "n_muestral": 20531,
+        "poblacion_expandida": 16974815,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "adultos_mayores_60_mas": {
+        "valor": 2.42,
+        "se": 0.38,
+        "cv": 15.74,
+        "n_muestral": 2366,
+        "poblacion_expandida": 1538841,
+        "estado_cv": "PRECAUCION",
+        "publicable": true
+      }
+    }
+  ],
+  "brechas_inclusion": [
+    {
+      "id": "analfabetismo",
+      "indicador": "No sabe leer ni escribir (>= 15 años)",
+      "variable_boleta": "P02A13 == 2",
+      "fuente": "ENAPROM 2025 (ENAPROM_PERSONAS-3)",
+      "con_discapacidad_severa": {
+        "valor": 41.52,
+        "se": 2.13,
+        "cv": 5.14,
+        "n_muestral": 818,
+        "poblacion_expandida": 592316,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      },
+      "sin_discapacidad_severa": {
+        "valor": 13.81,
+        "se": 0.38,
+        "cv": 2.77,
+        "n_muestral": 14611,
+        "poblacion_expandida": 12076924,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      }
+    },
+    {
+      "id": "asistencia_educativa",
+      "indicador": "Asistencia actual a establecimiento educativo (>= 15 años)",
+      "variable_boleta": "P02A15 == 1",
+      "fuente": "ENAPROM 2025 (ENAPROM_PERSONAS-3)",
+      "con_discapacidad_severa": {
+        "valor": 4.59,
+        "se": 0.93,
+        "cv": 20.24,
+        "n_muestral": 818,
+        "poblacion_expandida": 592316,
+        "estado_cv": "NO_PUBLICABLE",
+        "publicable": false
+      },
+      "sin_discapacidad_severa": {
+        "valor": 14.28,
+        "se": 0.4,
+        "cv": 2.77,
+        "n_muestral": 14611,
+        "poblacion_expandida": 12076924,
+        "estado_cv": "CONFIABLE",
+        "publicable": true
+      }
+    }
+  ],
+  "modulo_especializado_p05b": {
+    "n_muestral": 879,
+    "poblacion_expandida": 642454,
+    "nota": "Preguntas aplicadas exclusivamente a personas con discapacidad severa en ENAPROM 2025 (sin cruce externo)",
+    "variables": {
+      "P05B01A": [
+        {
+          "codigo": 1,
+          "metrica": {
+            "valor": 18.33,
+            "se": 1.6,
+            "cv": 8.72,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "CONFIABLE",
+            "publicable": true
+          }
+        },
+        {
+          "codigo": 2,
+          "metrica": {
+            "valor": 4.03,
+            "se": 0.77,
+            "cv": 19.12,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "PRECAUCION",
+            "publicable": true
+          }
+        },
+        {
+          "codigo": 3,
+          "metrica": {
+            "valor": 7.41,
+            "se": 1.0,
+            "cv": 13.53,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "CONFIABLE",
+            "publicable": true
+          }
+        },
+        {
+          "codigo": 4,
+          "metrica": {
+            "valor": 4.64,
+            "se": 0.82,
+            "cv": 17.71,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "PRECAUCION",
+            "publicable": true
+          }
+        },
+        {
+          "codigo": 5,
+          "metrica": {
+            "valor": 65.59,
+            "se": 1.91,
+            "cv": 2.91,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "CONFIABLE",
+            "publicable": true
+          }
+        }
+      ],
+      "P05B01B": [
+        {
+          "codigo": 1,
+          "metrica": {
+            "valor": 16.33,
+            "se": 1.51,
+            "cv": 9.28,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "CONFIABLE",
+            "publicable": true
+          }
+        },
+        {
+          "codigo": 2,
+          "metrica": {
+            "valor": 3.12,
+            "se": 0.7,
+            "cv": 22.58,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "NO_PUBLICABLE",
+            "publicable": false
+          }
+        },
+        {
+          "codigo": 3,
+          "metrica": {
+            "valor": 6.8,
+            "se": 0.97,
+            "cv": 14.31,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "CONFIABLE",
+            "publicable": true
+          }
+        },
+        {
+          "codigo": 4,
+          "metrica": {
+            "valor": 3.76,
+            "se": 0.77,
+            "cv": 20.42,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "NO_PUBLICABLE",
+            "publicable": false
+          }
+        },
+        {
+          "codigo": 5,
+          "metrica": {
+            "valor": 69.99,
+            "se": 1.87,
+            "cv": 2.67,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "CONFIABLE",
+            "publicable": true
+          }
+        }
+      ],
+      "P05B02": [
+        {
+          "codigo": 1,
+          "metrica": {
+            "valor": 88.68,
+            "se": 1.48,
+            "cv": 1.66,
+            "n_muestral": 625,
+            "poblacion_expandida": 457934,
+            "estado_cv": "CONFIABLE",
+            "publicable": true
+          }
+        },
+        {
+          "codigo": 2,
+          "metrica": {
+            "valor": 1.45,
+            "se": 0.48,
+            "cv": 33.15,
+            "n_muestral": 625,
+            "poblacion_expandida": 457934,
+            "estado_cv": "NO_PUBLICABLE",
+            "publicable": false
+          }
+        },
+        {
+          "codigo": 3,
+          "metrica": {
+            "valor": 0.98,
+            "se": 0.4,
+            "cv": 40.46,
+            "n_muestral": 625,
+            "poblacion_expandida": 457934,
+            "estado_cv": "NO_PUBLICABLE",
+            "publicable": false
+          }
+        },
+        {
+          "codigo": 4,
+          "metrica": {
+            "valor": 8.89,
+            "se": 1.31,
+            "cv": 14.74,
+            "n_muestral": 625,
+            "poblacion_expandida": 457934,
+            "estado_cv": "CONFIABLE",
+            "publicable": true
+          }
+        }
+      ],
+      "P05B03": [
+        {
+          "codigo": 1,
+          "metrica": {
+            "valor": 75.44,
+            "se": 1.73,
+            "cv": 2.29,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "CONFIABLE",
+            "publicable": true
+          }
+        },
+        {
+          "codigo": 2,
+          "metrica": {
+            "valor": 24.56,
+            "se": 1.73,
+            "cv": 7.04,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "CONFIABLE",
+            "publicable": true
+          }
+        }
+      ],
+      "P05B04": [
+        {
+          "codigo": 1,
+          "metrica": {
+            "valor": 19.04,
+            "se": 1.6,
+            "cv": 8.38,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "CONFIABLE",
+            "publicable": true
+          }
+        },
+        {
+          "codigo": 2,
+          "metrica": {
+            "valor": 44.39,
+            "se": 2.17,
+            "cv": 4.9,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "CONFIABLE",
+            "publicable": true
+          }
+        },
+        {
+          "codigo": 3,
+          "metrica": {
+            "valor": 31.41,
+            "se": 1.92,
+            "cv": 6.12,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "CONFIABLE",
+            "publicable": true
+          }
+        },
+        {
+          "codigo": 4,
+          "metrica": {
+            "valor": 5.16,
+            "se": 0.84,
+            "cv": 16.37,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "PRECAUCION",
+            "publicable": true
+          }
+        }
+      ],
+      "P05B05": [
+        {
+          "codigo": 1,
+          "metrica": {
+            "valor": 42.2,
+            "se": 2.11,
+            "cv": 4.99,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "CONFIABLE",
+            "publicable": true
+          }
+        },
+        {
+          "codigo": 2,
+          "metrica": {
+            "valor": 57.8,
+            "se": 2.11,
+            "cv": 3.64,
+            "n_muestral": 879,
+            "poblacion_expandida": 642454,
+            "estado_cv": "CONFIABLE",
+            "publicable": true
+          }
+        }
+      ]
+    }
+  }
+}
