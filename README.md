@@ -5,6 +5,7 @@
 [![Repositorio Oficial](https://img.shields.io/badge/GitHub-JBConsultant%2FDataton__INE__2026-0F2C59?style=for-the-badge)](https://github.com/JBConsultant/Dataton_INE_2026)
 [![Rigor Estadístico INE](https://img.shields.io/badge/Guardrail_INE-CV_%E2%89%A4_20.0%25-10B981?style=for-the-badge)](https://dataton.jbconsultor.net/)
 
+
 ---
 
 ## 🌐 Enlaces Oficiales de Entrega (Jurado Datatón INE 2026)
@@ -14,7 +15,7 @@
 * **Código Fuente del Dashboard:** [https://github.com/JBConsultant/Dataton_INE_2026/tree/main/Dashboard](https://github.com/JBConsultant/Dataton_INE_2026/tree/main/Dashboard)
 * **Presentación Ejecutiva para Exposición ante el Jurado (PDF):** [`docs/Presentacion_Jurado_Dataton_INE_2026.pdf`](https://github.com/JBConsultant/Dataton_INE_2026/blob/main/docs/Presentacion_Jurado_Dataton_INE_2026.pdf)
 * **Documento Técnico de Funcionamiento y Tecnologías (PDF):** [`docs/Documento_Tecnico_Funcionamiento_Dashboard_INE_2026.pdf`](https://github.com/JBConsultant/Dataton_INE_2026/blob/main/docs/Documento_Tecnico_Funcionamiento_Dashboard_INE_2026.pdf)
-* **Nota Metodológica y de Replicabilidad (PDF):** [`docs/Nota_Metodologica_Dataton_INE_2026.pdf`](https://github.com/JBConsultant/Dataton_INE_2026/blob/main/docs/Nota_Metodologica_Dataton_INE_2026.pdf)
+* **Origen de datos:** https://www.ine.gob.gt/wp-content/uploads/2026/10/ENAPROM_PERSONAS-3.xlsx
 
 ---
 
