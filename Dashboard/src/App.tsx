@@ -1,11 +1,5 @@
 import { useState, useMemo } from 'react';
-import {
-  Download,
-  ShieldCheck,
-  MapPin,
-  Calendar,
-  FileCheck2,
-} from 'lucide-react';
+import { ShieldCheck, RotateCcw, Users, Calendar } from 'lucide-react';
 import rawData from './data/datos_dashboard.json';
 import {
   DashboardData,
@@ -22,6 +16,19 @@ import { SidebarAuditPanel } from './components/SidebarAuditPanel';
 
 const dashboardData = rawData as unknown as DashboardData;
 
+const OPCIONES_EDAD: { value: FiltroEdad; label: string }[] = [
+  { value: 'TODOS', label: 'Todos (4+ años)' },
+  { value: '4-17', label: 'Niñez y Juventud (4–17)' },
+  { value: '18-59', label: 'Adultos (18–59)' },
+  { value: '60+', label: 'Adultos Mayores (60+)' },
+];
+
+const OPCIONES_SEXO: { value: FiltroSexo; label: string }[] = [
+  { value: 'TODOS', label: 'Todos' },
+  { value: 'Hombres', label: 'Hombres' },
+  { value: 'Mujeres', label: 'Mujeres' },
+];
+
 export function App() {
   const [edadSeleccionada, setEdadSeleccionada] = useState<FiltroEdad>('TODOS');
   const [sexoSeleccionado, setSexoSeleccionado] = useState<FiltroSexo>('TODOS');
@@ -35,7 +42,7 @@ export function App() {
     );
   }, []);
 
-  // Registro actual según filtros del Explorador Interactivo
+  // Registro actual según filtros del Control Maestro
   const registroActual = useMemo<CrucePrevalencia>(() => {
     return (
       dashboardData.explorador_prevalencia.find(
@@ -46,7 +53,7 @@ export function App() {
     );
   }, [edadSeleccionada, sexoSeleccionado, kpiPoblacionalBase]);
 
-  // Brecha de Analfabetismo para alimentar el Simulador de Políticas Públicas
+  // Brecha de Analfabetismo para alimentar el Simulador Visual de Impacto
   const brechaAnalfabetismo = useMemo(() => {
     return (
       dashboardData.brechas_inclusion.find((b) => b.id === 'analfabetismo') ||
@@ -54,7 +61,15 @@ export function App() {
     );
   }, []);
 
-  // Función para exportar a CSV los indicadores visibles respetando el guardrail publicable === false
+  const hayFiltroActivo =
+    edadSeleccionada !== 'TODOS' || sexoSeleccionado !== 'TODOS';
+
+  const handleResetFiltros = () => {
+    setEdadSeleccionada('TODOS');
+    setSexoSeleccionado('TODOS');
+  };
+
+  // Función para exportar a CSV los indicadores validados respetando publicable === false
   const handleExportCSV = () => {
     const headers = [
       'Bloque',
@@ -74,7 +89,6 @@ export function App() {
     const fuente = 'ENAPROM 2025 - ENAPROM_PERSONAS-3.xlsx';
     const rows: string[][] = [];
 
-    // 1. KPIs Superiores de Hogar
     const hSev = dashboardData.kpis_hogar.discapacidad_severa;
     rows.push([
       'KPI Hogar',
@@ -107,27 +121,9 @@ export function App() {
       fuente,
     ]);
 
-    // 2. KPI Poblacional Nacional y Filtro Activo en Explorador
-    const pBase = kpiPoblacionalBase.discapacidad_severa;
-    rows.push([
-      'KPI Poblacional (>=4 años)',
-      'Prevalencia Nacional Dificultad Funcional Severa',
-      'Edad: TODOS | Sexo: TODOS',
-      pBase.publicable ? `${pBase.valor.toFixed(2)}%` : 'RESERVADO (CV > 20%)',
-      `${pBase.se.toFixed(2)}%`,
-      pBase.cv !== null ? `${pBase.cv.toFixed(2)}%` : 'N/A',
-      String(pBase.n_muestral),
-      String(pBase.poblacion_expandida),
-      String(kpiPoblacionalBase.personas_con_disc_severa_est),
-      pBase.estado_cv,
-      String(pBase.publicable),
-      fuente,
-    ]);
-
-    // Registro del Filtro Seleccionado Actualmente
     const pAct = registroActual.discapacidad_severa;
     rows.push([
-      'Explorador Interactivo (Filtro Activo)',
+      'Filtro Activo',
       'Prevalencia Dificultad Funcional Severa',
       `Edad: ${registroActual.filtro_edad} | Sexo: ${registroActual.filtro_sexo}`,
       pAct.publicable ? `${pAct.valor.toFixed(2)}%` : 'RESERVADO (CV > 20%)',
@@ -143,7 +139,6 @@ export function App() {
       fuente,
     ]);
 
-    // 3. Dominios Funcionales del Washington Group (General >=4 y Adultos Mayores 60+)
     dashboardData.dominios_washington_group.forEach((dom) => {
       const g4 = dom.general_4_mas;
       rows.push([
@@ -178,7 +173,6 @@ export function App() {
       ]);
     });
 
-    // 4. Brechas de Inclusión (>= 15 años)
     dashboardData.brechas_inclusion.forEach((b) => {
       const conD = b.con_discapacidad_severa;
       rows.push([
@@ -213,8 +207,7 @@ export function App() {
       ]);
     });
 
-    const escapeCsvCell = (cell: string) =>
-      `"${cell.replace(/"/g, '""')}"`;
+    const escapeCsvCell = (cell: string) => `"${cell.replace(/"/g, '""')}"`;
 
     const csvContent =
       '\uFEFF' +
@@ -238,123 +231,180 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-800 flex flex-col">
-      {/* Encabezado Institucional Superior INE (#0F2C59) */}
-      <header className="bg-[#0F2C59] text-white border-b-4 border-[#00A8E8] shadow-md">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="space-y-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#00A8E8] text-[#0F2C59] text-xs font-extrabold uppercase tracking-wider">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  {dashboardData.metadata.proyecto}
-                </span>
-                <span className="inline-flex items-center gap-1 text-xs text-slate-300 font-medium">
-                  <MapPin className="w-3.5 h-3.5 text-[#00A8E8]" />
-                  {dashboardData.metadata.universo_geografico}
-                </span>
-              </div>
-              <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
-                {dashboardData.metadata.tema}
+      {/* Encabezado Minimalista Institucional (INE Guatemala) */}
+      <header className="bg-[#0F2C59] text-white border-b-4 border-[#00A8E8]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-7 sm:py-9">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="flex flex-col items-start gap-2.5">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00A8E8]/20 text-[#00A8E8] border border-[#00A8E8]/30 text-xs font-extrabold uppercase tracking-wider">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                ENAPROM 2025 • Estándar Washington Group
+              </span>
+              <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white leading-tight">
+                ¿Cómo viven las personas con dificultades funcionales en Guatemala?
               </h1>
-              <p className="text-xs text-slate-300 max-w-3xl">
-                {dashboardData.metadata.nota_metodologica}
+              <p className="text-sm sm:text-base text-slate-300 max-w-2xl">
+                Explora de forma visual y sencilla cuántos hogares y personas enfrentan limitaciones severas en su día a día, según las estadísticas oficiales del INE.
               </p>
             </div>
 
-            {/* Botón de Exportación CSV y Metadatos */}
-            <div className="flex flex-wrap items-center gap-3 self-start md:self-center">
-              <div className="hidden xl:flex flex-col items-end text-[11px] text-slate-300 font-mono">
-                <span className="flex items-center gap-1">
-                  <FileCheck2 className="w-3.5 h-3.5 text-[#00A8E8]" />
-                  Regla INE: CV ≤ {dashboardData.metadata.umbral_cv_maximo.toFixed(1)}%
-                </span>
-                <span className="flex items-center gap-1 text-slate-400">
-                  <Calendar className="w-3 h-3" />
-                  Corte: {dashboardData.metadata.fecha_generacion}
-                </span>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleExportCSV}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#00A8E8] hover:bg-[#0095ce] text-[#0F2C59] font-extrabold text-xs uppercase tracking-wider shadow-sm transition cursor-pointer"
-              >
-                <Download className="w-4 h-4" />
-                Exportar Indicadores (CSV)
-              </button>
+            {/* Logotipo Oficial INE Guatemala */}
+            <div className="bg-white px-4 py-2.5 rounded-2xl shadow-md self-start md:self-center shrink-0 border border-slate-100">
+              <img
+                src="/LogoINE.png"
+                alt="Instituto Nacional de Estadística - INE Guatemala"
+                className="h-11 sm:h-13 w-auto object-contain"
+              />
             </div>
           </div>
         </div>
       </header>
 
-      {/* Layout Principal de 2 Columnas (70% Principal + 30% Panel Lateral Fijo) */}
-      <main className="max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1">
-        <div className="flex flex-col lg:flex-row gap-6 items-start">
-          {/* Columna Principal (70%) */}
-          <div className="w-full lg:w-[70%] space-y-6">
-            {/* a) Tarjetas KPI Superiores */}
-            <KpiCards
-              kpisHogar={dashboardData.kpis_hogar}
-              kpiPoblacional={kpiPoblacionalBase}
-            />
+      {/* Barra de Filtros Interactivos (Control Maestro Sticky) */}
+      <div className="sticky top-0 z-20 bg-[#F8FAFC]/95 backdrop-blur-md border-b border-slate-200/90 shadow-2xs">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            {/* Selector Grupo de Edad (Pills grandes) */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-[#0F2C59] mr-1">
+                <Calendar className="w-3.5 h-3.5 text-[#00A8E8]" />
+                Grupo de Edad:
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {OPCIONES_EDAD.map((op) => {
+                  const activo = edadSeleccionada === op.value;
+                  return (
+                    <button
+                      key={op.value}
+                      type="button"
+                      onClick={() => setEdadSeleccionada(op.value)}
+                      className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                        activo
+                          ? 'bg-[#0F2C59] text-white shadow-sm'
+                          : 'bg-white text-slate-700 border border-slate-200 hover:border-[#00A8E8]'
+                      }`}
+                    >
+                      {op.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
-            {/* b) Explorador Interactivo con Guardrails de CV */}
-            <PrevalenceExplorer
-              edadSeleccionada={edadSeleccionada}
-              sexoSeleccionado={sexoSeleccionado}
-              onChangeEdad={setEdadSeleccionada}
-              onChangeSexo={setSexoSeleccionado}
-              registroActual={registroActual}
-              todosLosCruces={dashboardData.explorador_prevalencia}
-            />
+            {/* Selector Sexo (Pills grandes) */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-[#0F2C59] mr-1">
+                <Users className="w-3.5 h-3.5 text-[#00A8E8]" />
+                Sexo:
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {OPCIONES_SEXO.map((op) => {
+                  const activo = sexoSeleccionado === op.value;
+                  return (
+                    <button
+                      key={op.value}
+                      type="button"
+                      onClick={() => setSexoSeleccionado(op.value)}
+                      className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                        activo
+                          ? 'bg-[#00A8E8] text-white shadow-sm'
+                          : 'bg-white text-slate-700 border border-slate-200 hover:border-[#00A8E8]'
+                      }`}
+                    >
+                      {op.label}
+                    </button>
+                  );
+                })}
 
-            {/* c) Gráfico de Barras Comparativo de los 6 Dominios Funcionales WG */}
-            <WashingtonDomainsChart
-              dominios={dashboardData.dominios_washington_group}
-            />
-
-            {/* d) Comparativa de Brechas de Inclusión */}
-            <InclusionGaps brechas={dashboardData.brechas_inclusion} />
-
-            {/* e) Simulador de Políticas Públicas */}
-            <PolicySimulator
-              totalPersonasDiscSevera={
-                kpiPoblacionalBase.personas_con_disc_severa_est
-              }
-              tasaAnalfabetismoConDisc={
-                brechaAnalfabetismo.con_discapacidad_severa.valor
-              }
-              tasaAnalfabetismoSinDisc={
-                brechaAnalfabetismo.sin_discapacidad_severa.valor
-              }
-              poblacion15MasDiscSevera={
-                brechaAnalfabetismo.con_discapacidad_severa.poblacion_expandida
-              }
-            />
-          </div>
-
-          {/* Columna Lateral Fija (30% - "Marco Conceptual y Trazabilidad INE") */}
-          <div className="w-full lg:w-[30%]">
-            <SidebarAuditPanel
-              metadata={dashboardData.metadata}
-              definiciones={dashboardData.definiciones_oficiales}
-              registroActual={registroActual}
-            />
+                {hayFiltroActivo && (
+                  <button
+                    type="button"
+                    onClick={handleResetFiltros}
+                    title="Restablecer a Todos"
+                    className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-[#0F2C59] hover:bg-slate-200/60 transition cursor-pointer"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    Limpiar
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Contenido Principal con Mucho Aire y Estructura Ciudadana */}
+      <main className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-1">
+        {/* Bloque Central Protagonista: Comparador Dual ("El Dato Técnico vs. En Palabras Simples") */}
+        <KpiCards
+          kpisHogar={dashboardData.kpis_hogar}
+          registroActual={registroActual}
+          edadSeleccionada={edadSeleccionada}
+          sexoSeleccionado={sexoSeleccionado}
+          onResetFiltros={handleResetFiltros}
+        />
+
+        {/* Gráfico 1 — Comparativa por Etapas de la Vida */}
+        <PrevalenceExplorer
+          edadSeleccionada={edadSeleccionada}
+          sexoSeleccionado={sexoSeleccionado}
+          onChangeEdad={setEdadSeleccionada}
+          todosLosCruces={dashboardData.explorador_prevalencia}
+        />
+
+        {/* Gráfico 2 — ¿Qué actividades presentan mayor dificultad? (Los 6 Dominios del Washington Group) */}
+        <WashingtonDomainsChart
+          dominios={dashboardData.dominios_washington_group}
+          edadSeleccionada={edadSeleccionada}
+        />
+
+        {/* Gráfico 3 — Brechas de Inclusión en la Vida Diaria */}
+        <InclusionGaps brechas={dashboardData.brechas_inclusion} />
+
+        {/* Gráfico 4 — Simulador Visual de Impacto ("¿Qué pasa si cerramos la brecha?") */}
+        <PolicySimulator
+          registroActual={registroActual}
+          totalNacionalDiscSevera={
+            kpiPoblacionalBase.personas_con_disc_severa_est
+          }
+          tasaAnalfabetismoConDisc={
+            brechaAnalfabetismo.con_discapacidad_severa.valor
+          }
+          tasaAnalfabetismoSinDisc={
+            brechaAnalfabetismo.sin_discapacidad_severa.valor
+          }
+          poblacion15MasDiscSevera={
+            brechaAnalfabetismo.con_discapacidad_severa.poblacion_expandida
+          }
+        />
+
+        {/* Acordeón Colapsable al Pie de Página: Ficha Metodológica, Definiciones INE, SE/CV y Descarga CSV */}
+        <SidebarAuditPanel
+          metadata={dashboardData.metadata}
+          definiciones={dashboardData.definiciones_oficiales}
+          registroActual={registroActual}
+          onExportCSV={handleExportCSV}
+        />
       </main>
 
-      {/* Pie de Página Institucional */}
-      <footer className="bg-white border-t border-slate-200 mt-10 py-4 text-xs text-slate-500">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div>
-            <strong className="text-[#0F2C59]">
-              Instituto Nacional de Estadística (INE Guatemala)
-            </strong>{' '}
-            — {dashboardData.metadata.proyecto}
+      {/* Pie de Página Limpio */}
+      <footer className="bg-white border-t border-slate-200 mt-8 py-5 text-xs text-slate-500">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <img
+              src="/LogoINE.png"
+              alt="INE Guatemala"
+              className="h-7 w-auto object-contain"
+            />
+            <div>
+              <strong className="text-[#0F2C59]">
+                Instituto Nacional de Estadística (INE Guatemala)
+              </strong>{' '}
+              • {dashboardData.metadata.proyecto}
+            </div>
           </div>
-          <div className="font-mono text-[11px] text-slate-500">
-            Fuente única: {dashboardData.metadata.fuentes[0]} | Linealización de Taylor por UPM (NO_HOGAR)
+          <div className="text-slate-400">
+            Datos oficiales ENAPROM 2025 • Tecnologías 100% Open Source (Docker / Cloud WebApp)
           </div>
         </div>
       </footer>

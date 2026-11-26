@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   BookMarked,
   ShieldCheck,
@@ -6,7 +6,9 @@ import {
   FileSpreadsheet,
   Home,
   Activity,
-  Lock,
+  ChevronDown,
+  ChevronUp,
+  Download,
 } from 'lucide-react';
 import {
   CrucePrevalencia,
@@ -19,6 +21,7 @@ interface SidebarAuditPanelProps {
   metadata: DashboardData['metadata'];
   definiciones?: DefinicionesOficiales;
   registroActual: CrucePrevalencia;
+  onExportCSV: () => void;
 }
 
 const DEFAULT_DEFINICIONES: DefinicionesOficiales = {
@@ -42,223 +45,162 @@ export const SidebarAuditPanel: React.FC<SidebarAuditPanelProps> = ({
   metadata,
   definiciones,
   registroActual,
+  onExportCSV,
 }) => {
+  const [abierto, setAbierto] = useState<boolean>(false);
   const defs = definiciones ?? DEFAULT_DEFINICIONES;
   const metSevera = registroActual.discapacidad_severa;
 
   return (
-    <aside
-      aria-label="Marco Conceptual y Trazabilidad INE"
-      className="lg:sticky lg:top-6 space-y-5"
+    <section
+      aria-label="Ficha metodológica y definiciones del INE"
+      className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all"
     >
-      {/* Encabezado del Panel Lateral */}
-      <div className="bg-[#0F2C59] text-white rounded-xl p-4 shadow-sm border border-[#0F2C59]">
-        <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-lg bg-[#00A8E8] text-[#0F2C59]">
-            <ShieldCheck className="w-5 h-5" />
+      {/* Botón Principal del Acordeón Colapsable al Pie de Página */}
+      <button
+        type="button"
+        onClick={() => setAbierto((prev) => !prev)}
+        aria-expanded={abierto}
+        className="w-full px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-left hover:bg-slate-50/80 transition cursor-pointer"
+      >
+        <div className="flex items-center gap-3.5">
+          <div className="p-2.5 rounded-xl bg-[#0F2C59] text-white shrink-0">
+            <BookMarked className="w-5 h-5 text-[#00A8E8]" />
           </div>
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#00A8E8]">
-              Panel de Gobernanza Estadística
+            <span className="text-xs font-extrabold uppercase tracking-wider text-[#00A8E8] block">
+              Transparencia y Rigor Técnico • ENAPROM 2025
             </span>
-            <h2 className="text-base font-extrabold tracking-tight">
-              Marco Conceptual y Trazabilidad INE
+            <h2 className="text-base sm:text-lg font-extrabold text-[#0F2C59]">
+              Ver ficha metodológica y definiciones del INE
             </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Consulta qué es un hogar, qué significa el estándar Washington Group, los indicadores de precisión (SE / CV) y descarga la base en CSV.
+            </p>
           </div>
         </div>
-      </div>
 
-      {/* B) Ficha de Auditoría Técnica en Tiempo Real del Filtro Seleccionado */}
-      <div className="bg-white rounded-xl border-2 border-[#0F2C59]/20 shadow-sm overflow-hidden">
-        <div className="bg-slate-900 text-white px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Activity className="w-4 h-4 text-[#00A8E8]" />
-            <h3 className="text-xs font-bold uppercase tracking-wider">
-              Auditoría Técnica en Tiempo Real
-            </h3>
-          </div>
-          <span className="inline-flex items-center gap-1 text-[10px] font-mono bg-[#00A8E8]/20 text-[#00A8E8] px-2 py-0.5 rounded">
-            LIVE FILTER
-          </span>
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 text-[#0F2C59] text-xs font-extrabold self-start sm:self-center shrink-0">
+          <span>{abierto ? 'Ocultar ficha técnica' : 'Desplegar ficha'}</span>
+          {abierto ? (
+            <ChevronUp className="w-4 h-4 text-[#00A8E8]" />
+          ) : (
+            <ChevronDown className="w-4 h-4 text-[#00A8E8]" />
+          )}
         </div>
+      </button>
 
-        <div className="p-4 space-y-3.5">
-          {/* Subpoblación Activa */}
-          <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100">
-            <div className="text-xs text-slate-500">
-              Filtro activo:{' '}
-              <strong className="text-[#0F2C59]">
-                Edad: {registroActual.filtro_edad}
-              </strong>{' '}
-              ×{' '}
-              <strong className="text-[#00A8E8]">
-                Sexo: {registroActual.filtro_sexo}
-              </strong>
-            </div>
-            <CVBadge
-              cv={metSevera.cv}
-              estado={metSevera.estado_cv}
-              compact
-            />
-          </div>
-
-          {/* Métricas Muestrales (n_muestral, SE, CV %) */}
-          <div className="grid grid-cols-3 gap-2 text-center">
-            <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-              <div className="text-[10px] font-bold uppercase text-slate-400">
-                n_muestral
+      {/* Contenido Colapsable */}
+      {abierto && (
+        <div className="px-6 pb-6 pt-2 border-t border-slate-100 space-y-6 bg-[#F8FAFC]/50">
+          {/* Bloque 1: Definiciones Oficiales Ciudadanas e Institucionales */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 pt-2">
+            {/* ¿Qué es un Hogar? */}
+            <div className="bg-white p-5 rounded-2xl border border-slate-200 space-y-3">
+              <div className="flex items-center gap-2.5 text-[#0F2C59] font-extrabold text-sm">
+                <Home className="w-5 h-5 text-[#00A8E8] shrink-0" />
+                <h3>{defs.hogar.titulo}</h3>
               </div>
-              <div className="text-sm font-extrabold font-mono text-[#0F2C59] mt-0.5">
-                {metSevera.n_muestral.toLocaleString('es-GT')}
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                {defs.hogar.definicion_ine}
+              </p>
+              <div className="pt-2 border-t border-slate-100 text-xs text-slate-500 leading-relaxed">
+                <strong className="text-[#0F2C59]">Cálculo en ENAPROM 2025:</strong>{' '}
+                {defs.hogar.metodo_calculo}
               </div>
-              <div className="text-[10px] text-slate-500">registros</div>
             </div>
 
-            <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-              <div className="text-[10px] font-bold uppercase text-slate-400">
-                Error Estándar (SE)
+            {/* ¿Qué significa Dificultades Funcionales Severas? */}
+            <div className="bg-white p-5 rounded-2xl border border-slate-200 space-y-3">
+              <div className="flex items-center gap-2.5 text-[#0F2C59] font-extrabold text-sm">
+                <Database className="w-5 h-5 text-[#00A8E8] shrink-0" />
+                <h3>{defs.washington_group.titulo}</h3>
               </div>
-              <div className="text-sm font-extrabold font-mono text-[#0F2C59] mt-0.5">
-                ±{metSevera.se.toFixed(2)}%
-              </div>
-              <div className="text-[10px] text-slate-500">Taylor UPM</div>
-            </div>
-
-            <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-              <div className="text-[10px] font-bold uppercase text-slate-400">
-                CV %
-              </div>
-              <div
-                className={`text-sm font-extrabold font-mono mt-0.5 ${
-                  metSevera.estado_cv === 'CONFIABLE'
-                    ? 'text-emerald-700'
-                    : metSevera.estado_cv === 'PRECAUCION'
-                    ? 'text-amber-700'
-                    : 'text-rose-700'
-                }`}
-              >
-                {metSevera.cv !== null ? `${metSevera.cv.toFixed(2)}%` : 'N/A'}
-              </div>
-              <div className="text-[10px] text-slate-500">
-                Máx: {metadata.umbral_cv_maximo.toFixed(1)}%
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                {defs.washington_group.definicion_wg}
+              </p>
+              <div className="pt-2 border-t border-slate-100 text-xs text-slate-500 leading-relaxed">
+                <strong className="text-[#0F2C59]">Umbral oficial (Códigos 3 y 4):</strong>{' '}
+                {defs.washington_group.criterio_estadistico}
               </div>
             </div>
           </div>
 
-          {/* Universo Expandido y Condición de Publicabilidad */}
-          <div className="bg-slate-50 rounded-lg p-3 border border-slate-200 text-xs space-y-1.5">
-            <div className="flex justify-between">
-              <span className="text-slate-500">Población expandida (N):</span>
-              <strong className="font-mono text-slate-800">
-                {metSevera.poblacion_expandida.toLocaleString('es-GT')}
-              </strong>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">Con dificultad severa:</span>
-              <strong className="font-mono text-[#0F2C59]">
-                {metSevera.publicable
-                  ? `${registroActual.personas_con_disc_severa_est.toLocaleString('es-GT')} (${metSevera.valor.toFixed(2)}%)`
-                  : 'RESERVADO (CV > 20%)'}
-              </strong>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">Dictamen INE:</span>
-              <strong
-                className={
-                  metSevera.publicable ? 'text-emerald-700' : 'text-rose-700'
-                }
-              >
-                {metSevera.publicable
-                  ? `PUBLICABLE (${metSevera.estado_cv})`
-                  : 'NO PUBLICABLE (OCULTO)'}
-              </strong>
-            </div>
-          </div>
-
-          {/* Fuente Oficial y Nota de No Fusión de Encuestas */}
-          <div className="pt-2 border-t border-slate-100 space-y-2 text-xs">
-            <div className="flex items-start gap-2">
-              <FileSpreadsheet className="w-4 h-4 text-[#00A8E8] shrink-0 mt-0.5" />
-              <div>
-                <span className="font-bold text-[#0F2C59] block">
-                  Fuente Oficial Primaria:
+          {/* Bloque 2: Detalle Técnico Muestral (SE / CV) del Filtro Activo y Botón de Descarga CSV */}
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div className="space-y-2 flex-1">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <Activity className="w-4 h-4 text-[#00A8E8]" />
+                <span className="text-xs font-extrabold uppercase tracking-wider text-[#0F2C59]">
+                  Detalle Muestral del Segmento Seleccionado (Edad: {registroActual.filtro_edad} • Sexo: {registroActual.filtro_sexo})
                 </span>
-                <span className="text-slate-600 font-mono text-[11px]">
-                  ENAPROM 2025 - ENAPROM_PERSONAS-3.xlsx
-                </span>
+                <CVBadge cv={metSevera.cv} estado={metSevera.estado_cv} compact />
               </div>
-            </div>
 
-            <div className="flex items-start gap-2 p-2.5 rounded-lg bg-[#0F2C59]/5 border border-[#0F2C59]/15">
-              <Lock className="w-4 h-4 text-[#0F2C59] shrink-0 mt-0.5" />
-              <div>
-                <span className="font-bold text-[#0F2C59] block">
-                  Garantía de No Fusión de Encuestas:
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                  <span className="text-[11px] text-slate-400 font-bold block">
+                    Muestra (n)
+                  </span>
+                  <strong className="text-sm font-black text-[#0F2C59] font-mono">
+                    {metSevera.n_muestral.toLocaleString('es-GT')} personas
+                  </strong>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                  <span className="text-[11px] text-slate-400 font-bold block">
+                    Error Estándar (SE)
+                  </span>
+                  <strong className="text-sm font-black text-[#0F2C59] font-mono">
+                    ±{metSevera.se.toFixed(2)}%
+                  </strong>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                  <span className="text-[11px] text-slate-400 font-bold block">
+                    Coeficiente Variación (CV)
+                  </span>
+                  <strong className="text-sm font-black text-[#0F2C59] font-mono">
+                    {metSevera.cv !== null ? `${metSevera.cv.toFixed(2)}%` : 'N/A'} (Máx {metadata.umbral_cv_maximo}%)
+                  </strong>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                  <span className="text-[11px] text-slate-400 font-bold block">
+                    Población Expandida (N)
+                  </span>
+                  <strong className="text-sm font-black text-[#0F2C59] font-mono">
+                    {metSevera.poblacion_expandida.toLocaleString('es-GT')}
+                  </strong>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-4 pt-2 text-xs text-slate-500">
+                <span className="inline-flex items-center gap-1.5">
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-[#00A8E8]" />
+                  Fuente primaria: <strong>{metadata.fuentes[0]}</strong>
                 </span>
-                <p className="text-slate-600 text-[11px] leading-relaxed mt-0.5">
+                <span className="inline-flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                   {metadata.nota_metodologica}
-                </p>
+                </span>
               </div>
+            </div>
+
+            {/* Botón de Descarga CSV */}
+            <div className="shrink-0">
+              <button
+                type="button"
+                onClick={onExportCSV}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-5 py-3.5 rounded-xl bg-[#0F2C59] hover:bg-[#163d7a] text-white font-extrabold text-xs uppercase tracking-wider shadow-sm transition cursor-pointer"
+              >
+                <Download className="w-4 h-4 text-[#00A8E8]" />
+                Descargar Datos Validados (CSV)
+              </button>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* A) Bloques de Definiciones Oficiales (definiciones_oficiales) */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="bg-[#0F2C59] text-white px-4 py-3 flex items-center gap-2">
-          <BookMarked className="w-4 h-4 text-[#00A8E8]" />
-          <h3 className="text-xs font-bold uppercase tracking-wider">
-            Definiciones Oficiales Auditadas
-          </h3>
-        </div>
-
-        <div className="p-4 space-y-4">
-          {/* Bloque 1: ¿Qué es un Hogar y cómo se calcula? */}
-          <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
-            <div className="flex items-center gap-2 text-[#0F2C59] font-bold text-xs">
-              <Home className="w-4 h-4 text-[#00A8E8] shrink-0" />
-              <h4>{defs.hogar.titulo}</h4>
-            </div>
-            <div className="space-y-2 text-xs text-slate-700 leading-relaxed">
-              <div>
-                <span className="font-bold text-[#0F2C59] uppercase text-[10px] tracking-wider block">
-                  Definición INE (definicion_ine):
-                </span>
-                <p>{defs.hogar.definicion_ine}</p>
-              </div>
-              <div className="pt-1.5 border-t border-slate-200/80">
-                <span className="font-bold text-[#00A8E8] uppercase text-[10px] tracking-wider block">
-                  Método de Cálculo (metodo_calculo):
-                </span>
-                <p>{defs.hogar.metodo_calculo}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Bloque 2: ¿Por qué 'Dificultades Funcionales Severas' (Washington Group)? */}
-          <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
-            <div className="flex items-center gap-2 text-[#0F2C59] font-bold text-xs">
-              <Database className="w-4 h-4 text-[#00A8E8] shrink-0" />
-              <h4>{defs.washington_group.titulo}</h4>
-            </div>
-            <div className="space-y-2 text-xs text-slate-700 leading-relaxed">
-              <div>
-                <span className="font-bold text-[#0F2C59] uppercase text-[10px] tracking-wider block">
-                  Enfoque Funcional (definicion_wg):
-                </span>
-                <p>{defs.washington_group.definicion_wg}</p>
-              </div>
-              <div className="pt-1.5 border-t border-slate-200/80">
-                <span className="font-bold text-[#00A8E8] uppercase text-[10px] tracking-wider block">
-                  Criterio Estadístico (criterio_estadistico):
-                </span>
-                <p>{defs.washington_group.criterio_estadistico}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </aside>
+      )}
+    </section>
   );
 };

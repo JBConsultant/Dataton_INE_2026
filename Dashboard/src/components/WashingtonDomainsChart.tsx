@@ -1,219 +1,203 @@
-import React, { useState } from 'react';
-import { BarChart3, Eye, Ear, Footprints, Brain, HeartHandshake, MessageSquare } from 'lucide-react';
-import { DominioWG } from '../types/dashboard';
+import React, { useState, useEffect } from 'react';
+import {
+  BarChart3,
+  Eye,
+  Ear,
+  Footprints,
+  Brain,
+  HeartHandshake,
+  MessageSquare,
+} from 'lucide-react';
+import { DominioWG, FiltroEdad } from '../types/dashboard';
 import { CVBadge } from './CVBadge';
 
 interface WashingtonDomainsChartProps {
   dominios: DominioWG[];
+  edadSeleccionada: FiltroEdad;
 }
 
-type ModoPoblacionWG = 'general_4_mas' | 'adultos_mayores_60_mas' | 'comparativo';
+type ModoPoblacionWG = 'general_4_mas' | 'adultos_mayores_60_mas';
 
 const ICONOS_DOMINIO: Record<string, React.ReactNode> = {
-  caminar: <Footprints className="w-4 h-4" />,
-  ver: <Eye className="w-4 h-4" />,
-  recordar: <Brain className="w-4 h-4" />,
-  oir: <Ear className="w-4 h-4" />,
-  comunicarse: <MessageSquare className="w-4 h-4" />,
-  cuidado_personal: <HeartHandshake className="w-4 h-4" />,
+  caminar: <Footprints className="w-5 h-5" />,
+  ver: <Eye className="w-5 h-5" />,
+  recordar: <Brain className="w-5 h-5" />,
+  oir: <Ear className="w-5 h-5" />,
+  comunicarse: <MessageSquare className="w-5 h-5" />,
+  cuidado_personal: <HeartHandshake className="w-5 h-5" />,
 };
 
-export const WashingtonDomainsChart: React.FC<WashingtonDomainsChartProps> = ({ dominios }) => {
+const DESCRIPCION_CIUDADANA: Record<string, string> = {
+  caminar: 'Movilidad física, desplazarse o subir gradas',
+  ver: 'Dificultad visual severa incluso usando lentes',
+  recordar: 'Memoria, atención o concentración en la vida diaria',
+  oir: 'Dificultad auditiva severa incluso con aparato',
+  comunicarse: 'Entender o hacerse entender por los demás',
+  cuidado_personal: 'Bañarse, vestirse o alimentarse por sí mismo',
+};
+
+export const WashingtonDomainsChart: React.FC<WashingtonDomainsChartProps> = ({
+  dominios,
+  edadSeleccionada,
+}) => {
   const [modo, setModo] = useState<ModoPoblacionWG>('general_4_mas');
 
-  // Escala máxima dinámica según la vista seleccionada para barras proporcionales limpias
-  const maxValor = modo === 'general_4_mas' ? 2.2 : 12.5;
+  // Si el usuario selecciona "Adultos Mayores (60+)" en la barra maestra superior, sincronizamos automáticamente el switch
+  useEffect(() => {
+    if (edadSeleccionada === '60+') {
+      setModo('adultos_mayores_60_mas');
+    } else if (edadSeleccionada === 'TODOS') {
+      setModo('general_4_mas');
+    }
+  }, [edadSeleccionada]);
+
+  // Escala visual máxima para que las barras horizontales aprovechen el ancho de forma limpia
+  const maxValor = modo === 'general_4_mas' ? 2.0 : 12.0;
 
   return (
-    <section className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-      {/* Encabezado */}
-      <div className="px-5 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-lg bg-[#0F2C59] text-white">
-            <BarChart3 className="w-4 h-4 text-[#00A8E8]" />
+    <section
+      aria-label="¿Qué actividades presentan mayor dificultad?"
+      className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm"
+    >
+      {/* Encabezado y Switch Población General (4+) vs Adultos Mayores (60+) */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
+        <div className="flex items-start gap-3">
+          <div className="p-2.5 rounded-xl bg-[#0F2C59] text-white shrink-0 mt-0.5">
+            <BarChart3 className="w-5 h-5 text-[#00A8E8]" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-[#0F2C59] uppercase tracking-wide">
-              6 Dominios Funcionales del Washington Group (Dificultad Severa)
+            <span className="text-xs font-extrabold uppercase tracking-wider text-[#00A8E8]">
+              Gráfico 2 • Los 6 Dominios del Washington Group
+            </span>
+            <h3 className="text-lg sm:text-xl font-extrabold text-[#0F2C59]">
+              ¿Qué actividades presentan mayor dificultad?
             </h3>
-            <p className="text-xs text-slate-500">
-              Variables oficiales ENAPROM 2025: <code className="font-mono text-[#0F2C59]">P02A11A – P02A11F</code> (Códigos 3 y 4)
+            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+              Caminar y ver son las dos limitaciones cotidianas más frecuentes en Guatemala.
             </p>
           </div>
         </div>
 
-        {/* Selector de Universo Poblacional */}
-        <div className="inline-flex rounded-lg bg-slate-100 p-1 border border-slate-200 self-start sm:self-auto">
+        {/* Switch interactivo entre Población General (4+) y Adultos Mayores (60+) */}
+        <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200 self-start lg:self-center shrink-0">
           <button
             type="button"
             onClick={() => setModo('general_4_mas')}
-            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               modo === 'general_4_mas'
-                ? 'bg-[#0F2C59] text-white shadow-sm'
+                ? 'bg-[#0F2C59] text-white shadow-2xs'
                 : 'text-slate-600 hover:text-[#0F2C59]'
             }`}
           >
-            Población General (≥ 4 años)
+            Población General (4+)
           </button>
           <button
             type="button"
             onClick={() => setModo('adultos_mayores_60_mas')}
-            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               modo === 'adultos_mayores_60_mas'
-                ? 'bg-[#00A8E8] text-white shadow-sm'
+                ? 'bg-[#00A8E8] text-white shadow-2xs'
                 : 'text-slate-600 hover:text-[#0F2C59]'
             }`}
           >
-            Adultos Mayores (60+ años)
-          </button>
-          <button
-            type="button"
-            onClick={() => setModo('comparativo')}
-            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
-              modo === 'comparativo'
-                ? 'bg-slate-800 text-white shadow-sm'
-                : 'text-slate-600 hover:text-[#0F2C59]'
-            }`}
-          >
-            Vista Comparativa
+            Adultos Mayores (60+)
           </button>
         </div>
       </div>
 
-      {/* Cuerpo del Gráfico de Barras */}
-      <div className="p-5 space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 bg-slate-50 px-3.5 py-2 rounded-lg border border-slate-200/70">
-          {modo === 'general_4_mas' && (
-            <span>
-              Mostrando: <strong className="text-[#0F2C59]">Población Nacional ≥ 4 años</strong> (N = 16,974,815 | n = 20,531)
-            </span>
-          )}
-          {modo === 'adultos_mayores_60_mas' && (
-            <span>
-              Mostrando: <strong className="text-[#00A8E8]">Adultos Mayores 60+ años</strong> (N = 1,538,841 | n = 2,366)
-            </span>
-          )}
-          {modo === 'comparativo' && (
-            <div className="flex items-center gap-4">
-              <span className="inline-flex items-center gap-1.5 font-semibold text-[#0F2C59]">
-                <span className="w-3 h-3 rounded-sm bg-[#0F2C59] inline-block" /> Población General (≥ 4 años)
-              </span>
-              <span className="inline-flex items-center gap-1.5 font-semibold text-[#00A8E8]">
-                <span className="w-3 h-3 rounded-sm bg-[#00A8E8] inline-block" /> Adultos Mayores (60+ años)
-              </span>
-            </div>
-          )}
-          <span className="font-mono text-[11px] text-slate-500">
-            Umbral de publicación INE: CV ≤ 20.0%
-          </span>
-        </div>
+      {/* Lista de los 6 Dominios con Íconos Intuitivos y Etiqueta "1 de cada X" */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {dominios.map((dom, index) => {
+          const metActiva =
+            modo === 'adultos_mayores_60_mas'
+              ? dom.adultos_mayores_60_mas
+              : dom.general_4_mas;
 
-        <div className="space-y-4">
-          {dominios.map((dom) => {
-            const metGral = dom.general_4_mas;
-            const met60 = dom.adultos_mayores_60_mas;
-            const metActiva = modo === 'adultos_mayores_60_mas' ? met60 : metGral;
-            const pctWidthActiva = Math.min(100, (metActiva.valor / maxValor) * 100);
-            const ratio60vsGral = metGral.valor > 0 ? (met60.valor / metGral.valor).toFixed(1) : '1.0';
+          const pctWidthActiva = Math.min(
+            100,
+            Math.max(5, (metActiva.valor / maxValor) * 100)
+          );
+          const ratioUnoDeCada =
+            metActiva.valor > 0 ? Math.round(100 / metActiva.valor) : 0;
+          const personasAfectadas = Math.round(
+            metActiva.poblacion_expandida * (metActiva.valor / 100)
+          );
+          const esTop2 = index < 2;
 
-            return (
-              <div
-                key={dom.codigo}
-                className="p-3.5 rounded-lg border border-slate-200/90 hover:border-[#00A8E8]/60 transition bg-white"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-2.5">
-                    <div className="p-1.5 rounded-md bg-[#0F2C59]/10 text-[#0F2C59]">
-                      {ICONOS_DOMINIO[dom.id] || <BarChart3 className="w-4 h-4" />}
+          return (
+            <div
+              key={dom.codigo}
+              title={`${dom.nombre}: ${metActiva.valor.toFixed(2)}% (1 de cada ${ratioUnoDeCada} personas)`}
+              className="group p-4 sm:p-5 rounded-2xl border border-slate-200/90 hover:border-[#00A8E8] hover:shadow-xs transition-all bg-[#F8FAFC]/60 flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`p-2.5 rounded-xl transition-colors ${
+                        esTop2
+                          ? 'bg-[#00A8E8] text-white'
+                          : 'bg-[#0F2C59]/10 text-[#0F2C59] group-hover:bg-[#00A8E8]/15'
+                      }`}
+                    >
+                      {ICONOS_DOMINIO[dom.id] || <BarChart3 className="w-5 h-5" />}
                     </div>
                     <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold text-slate-800">{dom.nombre}</span>
-                        <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
-                          {dom.codigo}
-                        </span>
-                      </div>
+                      <h4 className="text-sm sm:text-base font-extrabold text-[#0F2C59]">
+                        {dom.nombre}
+                      </h4>
+                      <p className="text-xs text-slate-500">
+                        {DESCRIPCION_CIUDADANA[dom.id] || 'Actividad funcional básica'}
+                      </p>
                     </div>
                   </div>
 
-                  {modo !== 'comparativo' ? (
-                    <div className="flex items-center gap-3 self-end sm:self-auto">
-                      <CVBadge cv={metActiva.cv} estado={metActiva.estado_cv} compact />
-                      <span className="text-xs font-mono text-slate-500">
-                        SE ±{metActiva.se.toFixed(2)}%
-                      </span>
-                      <span
-                        className={`text-lg font-extrabold ${
-                          modo === 'adultos_mayores_60_mas' ? 'text-[#00A8E8]' : 'text-[#0F2C59]'
-                        }`}
-                      >
-                        {metActiva.valor.toFixed(2)}%
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2 self-end sm:self-auto text-xs">
-                      <span className="px-2 py-0.5 rounded bg-[#00A8E8]/10 text-[#0F2C59] font-bold">
-                        {ratio60vsGral}x mayor en 60+ años
-                      </span>
-                    </div>
-                  )}
+                  <CVBadge
+                    cv={metActiva.cv}
+                    estado={metActiva.estado_cv}
+                    compact
+                  />
                 </div>
 
-                {/* Barras Visuales */}
-                {modo !== 'comparativo' ? (
-                  <div className="w-full h-3.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        modo === 'adultos_mayores_60_mas' ? 'bg-[#00A8E8]' : 'bg-[#0F2C59]'
+                {/* Cifras y etiqueta "1 de cada X" al final de la barra */}
+                <div className="flex items-baseline justify-between gap-2 mb-2">
+                  <div className="flex items-baseline gap-2">
+                    <span
+                      className={`text-2xl sm:text-3xl font-black tracking-tight ${
+                        modo === 'adultos_mayores_60_mas'
+                          ? 'text-[#00A8E8]'
+                          : 'text-[#0F2C59]'
                       }`}
-                      style={{ width: `${pctWidthActiva}%` }}
-                    />
+                    >
+                      {metActiva.valor.toFixed(2)}%
+                    </span>
+                    <span className="text-xs text-slate-500 font-medium">
+                      (~{personasAfectadas.toLocaleString('es-GT')} personas)
+                    </span>
                   </div>
-                ) : (
-                  <div className="space-y-2 pt-1">
-                    {/* Barra General >= 4 años */}
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-xs">
-                        <span className="text-slate-600 font-medium">Población General (≥ 4 años)</span>
-                        <div className="flex items-center gap-2">
-                          <CVBadge cv={metGral.cv} estado={metGral.estado_cv} compact />
-                          <span className="font-bold text-[#0F2C59] w-14 text-right">
-                            {metGral.valor.toFixed(2)}%
-                          </span>
-                        </div>
-                      </div>
-                      <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-[#0F2C59] rounded-full transition-all duration-500"
-                          style={{ width: `${Math.min(100, (metGral.valor / 12.5) * 100)}%` }}
-                        />
-                      </div>
-                    </div>
 
-                    {/* Barra Adultos Mayores 60+ */}
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-xs">
-                        <span className="text-slate-600 font-medium">Adultos Mayores (60+ años)</span>
-                        <div className="flex items-center gap-2">
-                          <CVBadge cv={met60.cv} estado={met60.estado_cv} compact />
-                          <span className="font-bold text-[#00A8E8] w-14 text-right">
-                            {met60.valor.toFixed(2)}%
-                          </span>
-                        </div>
-                      </div>
-                      <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-[#00A8E8] rounded-full transition-all duration-500"
-                          style={{ width: `${Math.min(100, (met60.valor / 12.5) * 100)}%` }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-white text-[#0F2C59] font-extrabold text-xs border border-slate-200 shadow-2xs">
+                    1 de cada {ratioUnoDeCada}
+                  </span>
+                </div>
               </div>
-            );
-          })}
-        </div>
+
+              {/* Barra Horizontal Limpia */}
+              <div className="w-full h-3.5 bg-slate-200/80 rounded-full overflow-hidden mt-1">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    modo === 'adultos_mayores_60_mas'
+                      ? 'bg-[#00A8E8]'
+                      : esTop2
+                      ? 'bg-[#00A8E8]'
+                      : 'bg-[#0F2C59]'
+                  }`}
+                  style={{ width: `${pctWidthActiva}%` }}
+                />
+              </div>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
